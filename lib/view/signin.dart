@@ -44,7 +44,7 @@ class Signin extends StatelessWidget{
               if(state is Signinloaded){
                 home_page();
               }else if(state is SigninFail){
-                show_snackbar(state.error.split(']')[1]);
+                show_snackbar(state.error.contains(']')?state.error.split(']')[1]:state.error);
               }
             },
             child: Container(),

@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:natural/components/button.dart';
+import 'package:natural/components/dropdwon_button.dart';
 import 'package:natural/components/text_filled.dart';
-import 'package:natural/view/create_account/disease_history.dart';
 import 'package:natural/view/create_account/fat_history.dart';
 import 'package:natural/view/signin.dart';
 
@@ -15,10 +15,13 @@ class Personal_info extends StatelessWidget {
 
   late SignupBloc bloc;
   late var Context;
+  late var dropdown ;
+
 
   @override
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<SignupBloc>(context);
+    dropdown = Dropdwon_button();
     Context = context;
 
     return Scaffold(
@@ -30,8 +33,6 @@ class Personal_info extends StatelessWidget {
           children: [
             const SizedBox(height: 20,),
             Text_filled(bloc.user_name, 'Name', false),
-            const SizedBox(height: 20,),
-            Text_filled(bloc.sex, 'Sex', false),
             const SizedBox(height: 20,),
             Text_filled(bloc.current_weight, 'Weight', false,keyboard_type: TextInputType.number,),
             const SizedBox(height: 20,),
@@ -66,6 +67,9 @@ class Personal_info extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 20,),
+            //Text_filled(bloc.sex, 'Sex', false),
+            dropdown,
             const SizedBox(height: 50,),
           Button('Confirm', Color.fromARGB(255, 3, 118, 77), Colors.white,
               confirm_personal_info),
@@ -98,6 +102,7 @@ class Personal_info extends StatelessWidget {
     );
   }
   confirm_personal_info() {
+    bloc.sex = dropdown.selected();
     bloc.add(CheckPersonalInfo());
   }
 

@@ -14,12 +14,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   TextEditingController email_controller = TextEditingController();
   TextEditingController pass_controller = TextEditingController();
   TextEditingController user_name = TextEditingController();
-  TextEditingController sex = TextEditingController();
+  //TextEditingController sex = TextEditingController();
   TextEditingController long = TextEditingController();
   TextEditingController current_weight = TextEditingController();
   TextEditingController goal_weight = TextEditingController();
 
   String birth_date = 'Birth Date';
+  String sex ='';
   Map<String,bool> chronic_disease ={};
 
   late User_profile_model user_model;
@@ -38,9 +39,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
    _onSigninEvent(SigninEvent event, Emitter<SignupState> emit) async {
      emit(Signinloading());
      try {
-       await repo.signin(email_controller.text,pass_controller.text);
+       user_model = await repo.signin(email_controller.text,pass_controller.text);
        emit(Signinloaded('signed successfully'));
-       emit(SignupInitial());
      } catch (e) {
        emit(SigninFail(e.toString()));
        emit(SignupInitial());
@@ -91,6 +91,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   _onCreateUserEvent(CreateUserEvent event, Emitter<SignupState> emit) async {
     emit(Signuploading());
     try {
+      await set_daily_calories(Culculate_calories());
       await repo.signup(email_controller.text,pass_controller.text,user_model);
       emit(SignupUploaded('signed successfully'));
       emit(SignupInitial());
@@ -101,10 +102,32 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
   }
 
+  double Culculate_calories(){
+
+    int year = int.parse(user_model.birthDate!.split('-')[0]);
+    double age = (DateTime.now().difference(DateTime(year)).inDays)/365;
+    double BMR = 0;
+    if(sex == 'male'){
+      BMR = 66.47+(13.75*user_model.currentWeight!)+(5.003*user_model.long!)-(6.755*age);
+
+    }else{
+      BMR = 655.1+(9.563*user_model.currentWeight!)+(1.85*user_model.long!)-(4.676*age);
+    }
+    return BMR * 1.55;
+  }
+
+  set_daily_calories(double calorise){
+    if(user_model.goalWeight! >= user_model.currentWeight!){
+      user_model.dailyCalorise = calorise+300;
+    }else{
+      user_model.dailyCalorise = calorise-500;
+    }
+  }
+
   bool check_personalinfo_fields(){
     if(user_name.text.isEmpty) {
       return false;
-    }else if(sex.text.isEmpty){
+    }else if(sex.isEmpty){
       return false;
     }else if(long.text.isEmpty){
       return false;
@@ -120,7 +143,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   set_personalinfo_in_model(){
     user_model = User_profile_model(
         name: user_name.text,
-        sex: sex.text,
+        sex: sex,
         long: double.parse(long.text),
         currentWeight: double.parse(current_weight.text),
         birthDate: birth_date

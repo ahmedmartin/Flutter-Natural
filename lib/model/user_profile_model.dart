@@ -1,21 +1,19 @@
 class User_profile_model {
   String? _birthDate;
   double? _currentWeight;
-  String? _dailyCalorise;
-  int? _dailyWaterCup;
-  bool? _doNaturalPlanBefore;
+  double? _dailyCalorise;
+  bool _doNaturalPlanBefore=false;
   double? _goalWeight;
-  bool? _haveChronicDisease;
+  bool _haveChronicDisease=false;
   double? _long;
   String? _name;
   String? _sex;
-  Map<String,bool> ?_chronic_disease;
+  Map<String,dynamic> ?_chronic_disease = {};
 
   User_profile_model(
       {String? birthDate,
         double? currentWeight,
-        String? dailyCalorise,
-        int? dailyWaterCup,
+        double? dailyCalorise,
         bool? doNaturalPlanBefore,
         double? goalWeight,
         Map<String,bool> ?chronic_disease,
@@ -31,9 +29,6 @@ class User_profile_model {
     }
     if (dailyCalorise != null) {
       this._dailyCalorise = dailyCalorise;
-    }
-    if (dailyWaterCup != null) {
-      this._dailyWaterCup = dailyWaterCup;
     }
     if (doNaturalPlanBefore != null) {
       this._doNaturalPlanBefore = doNaturalPlanBefore;
@@ -62,17 +57,15 @@ class User_profile_model {
   set birthDate(String? birthDate) => _birthDate = birthDate;
   double? get currentWeight => _currentWeight;
   set currentWeight(double? currentWeight) => _currentWeight = currentWeight;
-  String? get dailyCalorise => _dailyCalorise;
-  set dailyCalorise(String? dailyCalorise) => _dailyCalorise = dailyCalorise;
-  int? get dailyWaterCup => _dailyWaterCup;
-  set dailyWaterCup(int? dailyWaterCup) => _dailyWaterCup = dailyWaterCup;
-  bool? get doNaturalPlanBefore => _doNaturalPlanBefore;
-  set doNaturalPlanBefore(bool? doNaturalPlanBefore) =>
+  double? get dailyCalorise => _dailyCalorise;
+  set dailyCalorise(double? dailyCalorise) => _dailyCalorise = dailyCalorise;
+  bool get doNaturalPlanBefore => _doNaturalPlanBefore;
+  set doNaturalPlanBefore(bool doNaturalPlanBefore) =>
       _doNaturalPlanBefore = doNaturalPlanBefore;
   double? get goalWeight => _goalWeight;
   set goalWeight(double? goalWeight) => _goalWeight = goalWeight;
-  bool? get haveChronicDisease => _haveChronicDisease;
-  set haveChronicDisease(bool? haveChronicDisease) =>
+  bool get haveChronicDisease => _haveChronicDisease;
+  set haveChronicDisease(bool haveChronicDisease) =>
       _haveChronicDisease = haveChronicDisease;
   double? get long => _long;
   set long(double? long) => _long = long;
@@ -80,23 +73,22 @@ class User_profile_model {
   set name(String? name) => _name = name;
   String? get sex => _sex;
   set sex(String? sex) => _sex = sex;
-  Map<String, bool>? get chronic_disease => _chronic_disease;
-  set chronic_disease(Map<String, bool>? value) {
+  Map<String, dynamic>? get chronic_disease => _chronic_disease;
+  set chronic_disease(Map<String, dynamic>? value) {
     _chronic_disease = value;
   }
 
   User_profile_model.fromJson(Map<String, dynamic> json) {
     _birthDate = json['birth_date'];
-    _currentWeight = json['current_weight'];
+    _currentWeight = double.parse(json['current_weight'].toString());
     _dailyCalorise = json['daily_calorise'];
-    _dailyWaterCup = json['daily_water_cup'];
     _doNaturalPlanBefore = json['do_natural_plan_before'];
-    _goalWeight = json['goal_weight'];
+    _goalWeight = double.parse(json['goal_weight'].toString());
     _haveChronicDisease = json['have_chronic_disease'];
-    _long = json['long'];
+    _long = double.parse(json['long'].toString());
     _name = json['name'];
     _sex = json['sex'];
-    _chronic_disease = json['chronic disease'];
+    _chronic_disease!.addAll(json['chronic disease']);
   }
 
   Map<String, dynamic> toJson() {
@@ -104,7 +96,6 @@ class User_profile_model {
     data['birth_date'] = this._birthDate;
     data['current_weight'] = this._currentWeight;
     data['daily_calorise'] = this._dailyCalorise;
-    data['daily_water_cup'] = this._dailyWaterCup;
     data['do_natural_plan_before'] = this._doNaturalPlanBefore;
     data['goal_weight'] = this._goalWeight;
     data['have_chronic_disease'] = this._haveChronicDisease;

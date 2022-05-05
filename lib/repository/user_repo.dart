@@ -7,9 +7,11 @@ import 'package:natural/model/user_profile_model.dart';
 
 class User_repo {
 
-  Future signin(email,pass) async {
-     await FirebaseAuth.instance
+  Future<User_profile_model> signin(email,pass) async {
+    UserCredential user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: pass);
+     DocumentSnapshot<Map<String,dynamic>> response = await FirebaseFirestore.instance.collection('users').doc(user.user!.uid).get();
+    return User_profile_model.fromJson(response.data()!);
   }
 
   Future signup(email,pass,User_profile_model model) async {
