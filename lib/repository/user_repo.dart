@@ -19,6 +19,11 @@ class User_repo {
         .createUserWithEmailAndPassword(email: email, password: pass);
    await FirebaseFirestore.instance.collection('users').doc(user.user!.uid).set(model.toJson());
   }
+
+  Future forgetPassword(email) async {
+    print(email);
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
   
   Future get_current_user()async{
     await FirebaseAuth.instance.authStateChanges().listen((User? user) {

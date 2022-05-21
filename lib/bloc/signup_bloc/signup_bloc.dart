@@ -29,6 +29,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
   SignupBloc() : super(SignupInitial()){
     on<SigninEvent>(_onSigninEvent);   // login
+    on<forget_passwordEvent>(_onforget_passwordEvent); //forget password
     on<SelectTimeEvent>(_onSelectTimeEvent);  //select birth date
     on<CheckPersonalInfo>(_onCheckPersonalInfo);  //add personal info to user model
     on<Show_ChronicDiseaseEvent>(_onShow_ChronicDiseaseEvent);  //visibility of disease list
@@ -47,6 +48,21 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
      }
 
   }
+
+  _onforget_passwordEvent(forget_passwordEvent event, Emitter<SignupState> emit) async {
+    emit(forget_passwordLoading());
+    try {
+      await repo.forgetPassword(email_controller.text);
+      emit(forget_passwordLoaded('Send Mail successfully'));
+      emit(SignupInitial());
+    } catch (e) {
+      print(e);
+      emit(forget_passwordFail(e.toString()));
+      emit(SignupInitial());
+    }
+
+  }
+
 
   _onSelectTimeEvent(SelectTimeEvent event,Emitter<SignupState> emit ) {
     birth_date = event.date;
@@ -102,7 +118,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
   }
 
-  double Culculate_calories(){
+  int Culculate_calories(){
 
     int year = int.parse(user_model.birthDate!.split('-')[0]);
     double age = (DateTime.now().difference(DateTime(year)).inDays)/365;
@@ -113,10 +129,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     }else{
       BMR = 655.1+(9.563*user_model.currentWeight!)+(1.85*user_model.long!)-(4.676*age);
     }
-    return BMR * 1.55;
+    return (BMR * 1.55).toInt();
   }
 
-  set_daily_calories(double calorise){
+  set_daily_calories(int calorise){
     if(user_model.goalWeight! >= user_model.currentWeight!){
       user_model.dailyCalorise = calorise+300;
     }else{

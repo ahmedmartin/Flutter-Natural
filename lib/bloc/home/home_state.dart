@@ -3,20 +3,16 @@ part of 'home_bloc.dart';
 @immutable
 abstract class HomeState {}
 
-abstract class History extends HomeState{}
-abstract class Tip extends HomeState{}
-abstract class Maile extends HomeState{}
-
 class HomeInitial extends HomeState {}
 
 
 
 //------fetch history---
-class LoadingHistoryState extends History{}
+class LoadingHistoryState extends HomeState{}
 
-class FetchedHistoryState extends History{}
+class FetchedHistoryState extends HomeState{}
 
-class FailedHistoryState extends History{
+class FailedHistoryState extends HomeState{
   String error;
   FailedHistoryState(this.error);
 }
@@ -31,12 +27,20 @@ class FailedTipState extends HomeState{
   FailedTipState(this.error);
 }
 
-//------fetch maile---
-class LoadingMaileState extends HomeState{}
+// //------fetch maile---
+// class LoadingMaileState extends HomeState{}
+//
+// class FetchedMaileState extends HomeState{}
+//
+// class FailedMaileState extends HomeState{
+//   String error;
+//   FailedMaileState(this.error);
+// }
 
-class FetchedMaileState extends HomeState{}
+//-----------add daily exercise ------------
+class AddCompleteState extends HomeState{}
 
-class FailedMaileState extends HomeState{
+class AddUnCompleteState extends HomeState{
   String error;
-  FailedMaileState(this.error);
+  AddUnCompleteState(this.error);
 }

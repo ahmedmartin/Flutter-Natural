@@ -19,6 +19,19 @@ class SigninFail extends SignupState{
   SigninFail(this.error);
 }
 
+//----------forget password states--------------------
+class forget_passwordLoading extends SignupState{}
+
+class forget_passwordLoaded extends SignupState{
+  final String message;
+  forget_passwordLoaded(this.message);
+}
+
+class forget_passwordFail extends SignupState{
+  final String error;
+  forget_passwordFail(this.error);
+}
+
 //-------------signup states-------------\\
 
 //--------personal info page------------

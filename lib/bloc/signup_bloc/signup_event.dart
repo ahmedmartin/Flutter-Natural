@@ -4,6 +4,8 @@ abstract class SignupEvent  {}
 
 class SigninEvent extends SignupEvent{}
 
+class forget_passwordEvent extends SignupEvent{}
+
 class SelectTimeEvent extends SignupEvent{
   String date;
   SelectTimeEvent(this.date);

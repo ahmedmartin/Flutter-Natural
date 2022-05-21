@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:natural/bloc/home/home_bloc.dart';
-import 'package:natural/bloc/signup_bloc/signup_bloc.dart';
 import 'package:natural/components/drawer.dart';
+import 'package:natural/components/home_components/home_dialog.dart';
+import '../components/home_components/home_daily_history.dart';
 
 
 
@@ -27,88 +28,79 @@ class Home extends StatelessWidget{
        ),
        appBar: AppBar(
          title: const Text('Daily Tasks'),
+         actions: [
+           IconButton(
+              icon: const Icon(Icons.add,size: 30,),
+               onPressed: (){show_dialog();})
+         ],
        ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Daily Calories",style: TextStyle(
-              color:const Color.fromARGB(255,3,118,77),
-              fontWeight: FontWeight.bold,fontSize: 20
-            ),),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            //----------calories----------
-            BlocBuilder<HomeBloc,HomeState>(
-              bloc: history_bloc,
-                builder: (context,state){
-              if(state is LoadingHistoryState){
-                return const CircularProgressIndicator(color: Color.fromARGB(255,3,118,77),);
-              }else if(state is FetchedHistoryState){
-                return _List_view(history_bloc, true);
-              }else if(state is FailedHistoryState)
-                return Center(child: Text('No Data'),);
 
-              return Container();
-            }),
-            const SizedBox(height: 30,),
-            const Text("Daily Water Cup",style: TextStyle(
-                color:const Color.fromARGB(255,3,118,77),
-                fontWeight: FontWeight.bold,fontSize: 20
-            ),),
+              //----------calories----------
+              Daily_history(history_bloc, true),
+              const SizedBox(height: 30,),
+              //---------water------------
+              Daily_history(history_bloc, false),
 
-            //---------water------------
-            BlocBuilder<HomeBloc,HomeState>(
-                bloc:history_bloc ,
-                builder: (context,state){
-              if(state is LoadingHistoryState){
-                return CircularProgressIndicator(color: const Color.fromARGB(255,3,118,77),);
-              }else if(state is FetchedHistoryState){
-                return _List_view(history_bloc, false);
-              }else if(state is FailedHistoryState)
-                return Center(child: Text('No Data'),);
+              const SizedBox(height: 30,),
+              const Text("Tip",style: TextStyle(
+                  color:Color.fromARGB(255,3,118,77),
+                  fontWeight: FontWeight.bold,fontSize: 20
+              ),),
+              const SizedBox(height: 10,),
+              //---------tip------------
+              BlocBuilder<HomeBloc,HomeState>(
+                  bloc:tip_bloc ,
+                  builder: (context,state){
+                    if(state is LoadingTipState){
+                      return const CircularProgressIndicator(color: Color.fromARGB(255,3,118,77),);
+                    }else if(state is FetchedTipState){
+                      return Card(
+                          color:const Color.fromARGB(255,3,118,77) ,
+                          shadowColor: Colors.black,
+                          //margin: const EdgeInsets.all(10),
+                          shape:RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ) ,
+                          child:Container(
+                            padding: EdgeInsets.all(10),
+                            width: MediaQuery.of(context).size.width-20,
+                            child: Center(
+                              child: Text(tip_bloc.tip,style: const TextStyle(
+                                  color:Colors.white,
+                                  fontWeight: FontWeight.bold,fontSize: 20
+                              ),),
+                            ),
+                          ),);
+                    }else if(state is FailedTipState) {
+                      return const Center(child:  Text('No Data'),);
+                    }
+                    return Container();
+                  }),
 
-              return Container();
-            }),
-
-            const SizedBox(height: 30,),
-            const Text("Tip",style: TextStyle(
-                color:Color.fromARGB(255,3,118,77),
-                fontWeight: FontWeight.bold,fontSize: 20
-            ),),
-            const SizedBox(height: 10,),
-            //---------tip------------
-            BlocBuilder<HomeBloc,HomeState>(
-                bloc:tip_bloc ,
-                builder: (context,state){
-                  if(state is LoadingTipState){
-                    return const CircularProgressIndicator(color: Color.fromARGB(255,3,118,77),);
-                  }else if(state is FetchedTipState){
-                    return Card(
-                        color:const Color.fromARGB(255,3,118,77) ,
-                        shadowColor: Colors.black,
-                        //margin: const EdgeInsets.all(10),
-                        shape:RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ) ,
-                        child:Container(
-                          padding: EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width-20,
-                          child: Center(
-                            child: Text(tip_bloc.tip,style: const TextStyle(
-                                color:Colors.white,
-                                fontWeight: FontWeight.bold,fontSize: 20
-                            ),),
-                          ),
-                        ),);
-                  }else if(state is FailedTipState) {
-                    return const Center(child:  Text('No Data'),);
-                  }
-                  return Container();
-                }),
-          ],
+              BlocListener<HomeBloc,HomeState>(
+                bloc: history_bloc,
+                listener: (context,state){
+                if(state is AddCompleteState){
+                  Navigator.pop(context);
+                  history_bloc.add(FetchHistoryEvent());
+                }else if(state is AddUnCompleteState){
+                  show_snackbar(state.error);
+                }
+              },
+                child: Container(),
+              )
+            ],
+          ),
         ),
       ),
+
     );
   }
   show_snackbar(String message){
@@ -116,51 +108,36 @@ class Home extends StatelessWidget{
         SnackBar(content: Text(message))
     );
   }
-}
 
-
-class _List_view extends StatelessWidget{
-
-  HomeBloc bloc;
-  bool is_calorise;
-  late SignupBloc userbloc;
-  _List_view(this.bloc,this.is_calorise);
-
-  @override
-  Widget build(BuildContext context) {
-
-    userbloc=  BlocProvider.of<SignupBloc>(context);
-    return Container(
-      height: 180,
-        child: ListView.builder(
-            itemCount:bloc.history_list.length ,
-            itemBuilder: (contex,index){
-              return Card(
-                  color:const Color.fromARGB(255,3,118,77) ,
-                  shadowColor: Colors.black,
-                  //margin: EdgeInsets.all(10),
-                  shape:RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ) ,
-                  child: ListTile(
-                    title:Text(bloc.history_list[index].Date!,style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                    ),) ,
-                    subtitle: Text(is_calorise?"your Daily Calories should be ${userbloc.user_model.dailyCalorise.toString()}":
-                    "your Daily Water Cup should be 10",style: TextStyle(
-                        color: Colors.white30,
-                    ),),
-                    trailing: Text(is_calorise?bloc.history_list[index].calories.toString():
-                    bloc.history_list[index].waterCup.toString(),style: TextStyle(
-                        color: is_calorise?
-                        (bloc.history_list[index].calories==userbloc.user_model.dailyCalorise)?Colors.white:Colors.red:
-                        (bloc.history_list[index].waterCup! >= 10)?Colors.white:Colors.red,
-                        fontSize: 20,
-                    ),),
-                  ));
-            }));
+  show_dialog(){
+    showDialog(context: Context, builder: (context){
+      return AlertDialog(
+        title: const Text('Add Your Day Exercise',style: TextStyle(
+            color:Color.fromARGB(255,3,118,77),
+            fontWeight: FontWeight.bold,fontSize: 20
+        ),),
+        content:home_Dialog(history_bloc) ,
+        actions: [
+          GestureDetector(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color.fromARGB(255,3,118,77)
+              ),
+              child: const Text('Confirm',style:  TextStyle(color: Colors.white,fontSize: 18),),
+            ),
+            onTap: (){
+              history_bloc.add(AddDailyExercise());
+            },
+          )
+        ],
+      );
+    });
   }
+
 }
+
+
+
 

@@ -1,7 +1,7 @@
 class User_profile_model {
   String? _birthDate;
   double? _currentWeight;
-  double? _dailyCalorise;
+  int? _dailyCalorise;
   bool _doNaturalPlanBefore=false;
   double? _goalWeight;
   bool _haveChronicDisease=false;
@@ -13,7 +13,7 @@ class User_profile_model {
   User_profile_model(
       {String? birthDate,
         double? currentWeight,
-        double? dailyCalorise,
+        int? dailyCalorise,
         bool? doNaturalPlanBefore,
         double? goalWeight,
         Map<String,bool> ?chronic_disease,
@@ -57,8 +57,8 @@ class User_profile_model {
   set birthDate(String? birthDate) => _birthDate = birthDate;
   double? get currentWeight => _currentWeight;
   set currentWeight(double? currentWeight) => _currentWeight = currentWeight;
-  double? get dailyCalorise => _dailyCalorise;
-  set dailyCalorise(double? dailyCalorise) => _dailyCalorise = dailyCalorise;
+  int? get dailyCalorise => _dailyCalorise;
+  set dailyCalorise(int? dailyCalorise) => _dailyCalorise = dailyCalorise;
   bool get doNaturalPlanBefore => _doNaturalPlanBefore;
   set doNaturalPlanBefore(bool doNaturalPlanBefore) =>
       _doNaturalPlanBefore = doNaturalPlanBefore;

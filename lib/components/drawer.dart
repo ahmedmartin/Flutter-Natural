@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:natural/view/chatboot.dart';
 import 'package:natural/view/disease/all_disease.dart';
+import 'package:natural/view/plan.dart';
+import 'package:natural/view/work_out.dart';
 
+import '../bloc/chatboot/chatboot_bloc.dart';
 import '../bloc/macro_disease_calculator/macro_calculator_bloc.dart';
+import '../bloc/workout_plan/workout_bloc.dart';
 import '../view/macro_calculator.dart';
+import '../view/profile_info.dart';
 
 
 
@@ -24,7 +30,7 @@ class drawer extends StatelessWidget{
           ),
           const SizedBox(height: 30,),
           _drawe_button('Profile Information',(){
-           // Navigator.push(context, MaterialPageRoute(builder:(context)=>Profile_info));
+            Navigator.push(context, MaterialPageRoute(builder:(context)=>Profile_info()));
           }),
           const SizedBox(height: 25,),
           _drawe_button('Macro Calculator', () {
@@ -35,7 +41,10 @@ class drawer extends StatelessWidget{
           }),
           const SizedBox(height: 25,),
           _drawe_button('Work Out', () {
-            // Navigator.push(context, MaterialPageRoute(builder:(context)=>Profile_info));
+            BlocProvider<WorkoutBloc>(
+              create: (_) => WorkoutBloc(),
+            );
+            Navigator.push(context, MaterialPageRoute(builder:(context)=>Work_out()));
           }),
           const SizedBox(height: 25,),
           _drawe_button('Disease Instructions', () {
@@ -46,11 +55,17 @@ class drawer extends StatelessWidget{
           }),
           const SizedBox(height: 25,),
           _drawe_button('Plan', () {
-            // Navigator.push(context, MaterialPageRoute(builder:(context)=>Profile_info));
+            BlocProvider<WorkoutBloc>(
+              create: (_) => WorkoutBloc(),
+            );
+            Navigator.push(context, MaterialPageRoute(builder:(context)=>Plan(false)));
           }),
           const SizedBox(height: 25,),
           _drawe_button('Chatbot', () {
-            // Navigator.push(context, MaterialPageRoute(builder:(context)=>Profile_info));
+            BlocProvider<ChatbootBloc>(
+              create: (_) => ChatbootBloc(),
+            );
+            Navigator.push(context, MaterialPageRoute(builder:(context)=>Chatboot()));
           })
         ],
       ) ,

@@ -29,4 +29,12 @@ class Home_repo {
     return response.data()!['tip'];
   }
 
+  Future AddDaily(User_history_model model) async {
+
+    String uid = await FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(uid)
+        .collection('history').doc(model.Date).set(model.toJson());
+  }
+
 }

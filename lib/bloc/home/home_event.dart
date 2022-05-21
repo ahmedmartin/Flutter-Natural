@@ -9,4 +9,6 @@ class FetchTipsEvent extends HomeEvent{}
 
 class FetchMaileEvent extends HomeEvent{}
 
+class AddDailyExercise extends HomeEvent{}
+
 

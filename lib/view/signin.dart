@@ -35,6 +35,22 @@ class Signin extends StatelessWidget{
               if(state is SignupInitial){
                return Button("SignIn",Color.fromARGB(255,3,118,77),Colors.white,signin_function);
               }else if(state is Signinloading){
+                return const CircularProgressIndicator(color: Color.fromARGB(255,3,118,77),);
+              }else
+                return Container();
+            }),
+
+            SizedBox(height: 10,),
+            BlocBuilder<SignupBloc,SignupState>(builder: (context,state){
+              if(state is SignupInitial){
+                return TextButton(
+                  child: const Text('Forget My Password',style: TextStyle(
+                     color: Color.fromARGB(255,3,118,77),fontSize: 20
+                  ),),
+                  onPressed: (){
+                     bloc.add(forget_passwordEvent());
+                  },);
+              }else if(state is forget_passwordLoading){
                 return CircularProgressIndicator(color: const Color.fromARGB(255,3,118,77),);
               }else
                 return Container();
@@ -45,6 +61,10 @@ class Signin extends StatelessWidget{
                 home_page();
               }else if(state is SigninFail){
                 show_snackbar(state.error.contains(']')?state.error.split(']')[1]:state.error);
+              }else if(state is forget_passwordFail){
+                show_snackbar(state.error.contains(']')?state.error.split(']')[1]:state.error);
+              }else if(state is forget_passwordLoaded){
+                show_snackbar(state.message);
               }
             },
             child: Container(),

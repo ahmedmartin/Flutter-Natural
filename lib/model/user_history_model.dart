@@ -3,12 +3,15 @@ class User_history_model {
   int? _waterCup;
   String? _Date;
 
-  User_history_model({int? calories, int? waterCup}) {
+  User_history_model({int? calories, int? waterCup,String? Date}) {
     if (calories != null) {
       this._calories = calories;
     }
     if (waterCup != null) {
       this._waterCup = waterCup;
+    }
+    if(Date != null){
+      this._Date = Date;
     }
   }
 
